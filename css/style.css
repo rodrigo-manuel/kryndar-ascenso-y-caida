@@ -1,0 +1,154 @@
+/* KRYNDAR — interfaz (HTML + CSS). El #ui se escala con el canvas: todo usa unidades em. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cy: #5ff3ff;
+  --vi: #9b6bff;
+  --gold: #ffcf6b;
+  --red: #ff4258;
+  --ink: #e8f1ff;
+  --dim: #8fa3c7;
+  --glass: rgba(10, 12, 28, 0.72);
+  --line: rgba(95, 243, 255, 0.28);
+}
+html, body { width: 100%; height: 100%; background: #04030a; overflow: hidden; }
+body { color: var(--ink); font-family: 'Rajdhani', 'Segoe UI', system-ui, sans-serif; user-select: none; -webkit-user-select: none; }
+#wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#game { display: block; background: #000; cursor: crosshair; }
+#ui { position: absolute; pointer-events: none; overflow: hidden; font-size: 16px; }
+
+/* ---------- Pantallas ---------- */
+.screen { position: absolute; inset: 0; display: none; pointer-events: auto; }
+.screen.on { display: flex; animation: fadeIn .45s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.panel-screen { align-items: center; justify-content: center; background: radial-gradient(ellipse at center, rgba(4,4,14,.55), rgba(2,2,8,.88)); backdrop-filter: blur(3px); }
+
+.panel {
+  min-width: 34em; max-width: 46em; padding: 1.8em 2.2em 1.6em;
+  background: linear-gradient(160deg, rgba(20,24,52,.86), rgba(8,10,24,.9));
+  border: 1px solid var(--line); border-radius: .5em;
+  box-shadow: 0 0 0 1px rgba(155,107,255,.15) inset, 0 1.5em 4em rgba(0,0,0,.6), 0 0 3em rgba(95,243,255,.08);
+  position: relative;
+}
+.panel::before { content: ''; position: absolute; left: 1.2em; right: 1.2em; top: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--cy), var(--vi), transparent); }
+.panel.narrow { min-width: 22em; max-width: 24em; }
+.panel.wide { min-width: 44em; }
+.panel h2 { font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: .18em; font-size: 1.35em; text-transform: uppercase; margin-bottom: 1em; color: #fff; text-shadow: 0 0 .8em rgba(95,243,255,.5); }
+.row { display: flex; gap: .8em; justify-content: flex-end; margin-top: 1.4em; flex-wrap: wrap; }
+
+/* ---------- Botones ---------- */
+.btn {
+  font-family: 'Orbitron', sans-serif; font-weight: 500; font-size: .95em; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink); background: linear-gradient(90deg, rgba(95,243,255,.08), rgba(155,107,255,.04));
+  border: 1px solid rgba(95,243,255,.22); padding: .7em 1.4em; cursor: pointer; text-align: left;
+  clip-path: polygon(0 0, calc(100% - .8em) 0, 100% .8em, 100% 100%, .8em 100%, 0 calc(100% - .8em));
+  transition: transform .15s, background .15s, color .15s, border-color .15s, box-shadow .15s; position: relative; outline: none;
+}
+.btn:hover, .btn.sel { background: linear-gradient(90deg, rgba(95,243,255,.32), rgba(155,107,255,.18)); color: #fff; border-color: var(--cy); transform: translateX(.45em); box-shadow: 0 0 1.2em rgba(95,243,255,.35); }
+.btn:disabled { opacity: .35; cursor: default; transform: none; box-shadow: none; }
+.btn.small { font-size: .78em; padding: .6em 1.2em; }
+.btn.ghost { background: transparent; border-color: rgba(255,255,255,.12); color: var(--dim); }
+
+/* ---------- Menú ---------- */
+#menu { align-items: center; justify-content: flex-start; background: linear-gradient(90deg, rgba(4,3,12,.82) 0%, rgba(4,3,12,.45) 38%, transparent 62%); }
+.menu-col { margin-left: 5.5em; display: flex; flex-direction: column; gap: 2.2em; }
+.logo-kicker { font-family: 'Rajdhani'; font-weight: 700; letter-spacing: .5em; font-size: .85em; color: var(--cy); opacity: .85; margin-bottom: .2em; }
+.logo-title {
+  font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 5.2em; letter-spacing: .1em; line-height: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #bff8ff 40%, #9b6bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 .25em rgba(95,243,255,.55)) drop-shadow(0 .1em 0 rgba(60,20,120,.8));
+  animation: logoPulse 4s ease-in-out infinite;
+}
+@keyframes logoPulse { 50% { filter: drop-shadow(0 0 .45em rgba(155,107,255,.7)) drop-shadow(0 .1em 0 rgba(60,20,120,.8)); } }
+.logo-sub { font-family: 'Orbitron'; font-weight: 500; letter-spacing: .62em; font-size: 1.05em; color: #d9e6ff; margin-top: .4em; }
+.logo-sub span { color: var(--gold); }
+.menu-list { display: flex; flex-direction: column; gap: .55em; width: 17em; }
+.menu-foot { font-size: .8em; letter-spacing: .25em; color: var(--dim); text-transform: uppercase; }
+
+/* ---------- Niveles ---------- */
+.level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8em; }
+.lvl { padding: 1em 1.1em; text-align: left; display: flex; flex-direction: column; gap: .3em; min-height: 6.2em; }
+.lvl .n { font-size: .75em; color: var(--cy); letter-spacing: .25em; }
+.lvl .t { font-family: 'Rajdhani'; font-weight: 700; font-size: 1.2em; letter-spacing: .06em; text-transform: none; }
+.lvl .d { font-family: 'Rajdhani'; font-size: .85em; letter-spacing: 0; text-transform: none; color: var(--dim); }
+.lvl .f { margin-top: auto; font-size: .7em; color: var(--gold); }
+
+/* ---------- Controles ---------- */
+.keys { width: 100%; border-collapse: collapse; font-size: 1.02em; }
+.keys td { padding: .42em .6em; border-bottom: 1px solid rgba(255,255,255,.06); }
+.keys td:first-child { white-space: nowrap; }
+.keys td.un { color: var(--dim); font-size: .85em; text-align: right; white-space: nowrap; }
+kbd { display: inline-block; font-family: 'Orbitron'; font-size: .7em; padding: .25em .55em; margin: 0 .12em; border-radius: .3em; background: rgba(95,243,255,.1); border: 1px solid rgba(95,243,255,.35); color: #fff; box-shadow: 0 .15em 0 rgba(0,0,0,.5); }
+.credits { line-height: 1.7; font-size: 1.08em; color: #cfdcf5; }
+
+/* ---------- Historia ---------- */
+#story { align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 60%, rgba(30,10,50,.55), rgba(2,2,8,.95)); }
+.story { max-width: 38em; text-align: center; display: flex; flex-direction: column; gap: 1.2em; align-items: center; }
+.story p { font-size: 1.35em; line-height: 1.45; color: #d6e2fb; opacity: 0; animation: storyIn .9s ease forwards; }
+.story p b { color: #fff; text-shadow: 0 0 .6em rgba(95,243,255,.6); }
+.story .s1 { animation-delay: .2s; } .story .s2 { animation-delay: 1.4s; } .story .s3 { animation-delay: 2.6s; }
+.story .s4 { animation-delay: 3.8s; font-family: 'Orbitron'; letter-spacing: .2em; font-size: 1.05em; color: var(--gold); }
+.story .btn { opacity: 0; animation: storyIn .6s ease 4.6s forwards; margin-top: 1em; }
+@keyframes storyIn { from { opacity: 0; transform: translateY(.6em); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* ---------- Diálogo ---------- */
+.dialog {
+  position: absolute; left: 50%; bottom: 1.6em; width: 46em; transform: translate(-50%, 1em); opacity: 0;
+  display: flex; gap: 1.1em; padding: 1em 1.3em 1em 1em; pointer-events: none;
+  background: linear-gradient(170deg, rgba(14,16,38,.92), rgba(6,7,18,.94)); border: 1px solid var(--line); border-radius: .45em;
+  box-shadow: 0 1em 3em rgba(0,0,0,.6), 0 0 2em rgba(95,243,255,.1); transition: opacity .25s, transform .25s;
+}
+.dialog.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.dialog.radio { border-color: rgba(255,66,88,.45); box-shadow: 0 1em 3em rgba(0,0,0,.6), 0 0 2em rgba(255,66,88,.18); }
+.dialog.radio .portrait-frame { filter: saturate(.4) contrast(1.2); }
+.dialog.radio .portrait-frame::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,60,80,.14) 0 2px, transparent 2px 4px); }
+.portrait-frame { position: relative; width: 6.6em; height: 6.6em; flex: none; border-radius: .35em; overflow: hidden; border: 1px solid rgba(255,255,255,.14); background: radial-gradient(circle at 50% 35%, #1d2246, #070812); }
+.portrait-frame canvas { width: 100%; height: 100%; display: block; }
+.dialog-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.dialog-name { font-family: 'Orbitron'; font-weight: 700; letter-spacing: .2em; font-size: .85em; color: var(--cy); margin-bottom: .35em; }
+.dialog-text { font-size: 1.28em; line-height: 1.35; color: #f1f5ff; min-height: 3.4em; }
+.dialog-hint { margin-top: auto; align-self: flex-end; font-size: .7em; letter-spacing: .25em; color: var(--dim); animation: blink 1.2s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+
+/* ---------- Tarjeta de nivel ---------- */
+.levelcard { position: absolute; left: 0; right: 0; top: 26%; text-align: center; opacity: 0; pointer-events: none; }
+.levelcard.on { animation: card 3.6s ease forwards; }
+@keyframes card { 0% { opacity: 0; letter-spacing: .9em; } 14% { opacity: 1; letter-spacing: .32em; } 78% { opacity: 1; } 100% { opacity: 0; } }
+.lc-num { font-family: 'Orbitron'; font-size: .95em; letter-spacing: .6em; color: var(--cy); text-shadow: 0 0 1em rgba(95,243,255,.8); }
+.lc-name { font-family: 'Orbitron'; font-weight: 900; font-size: 2.8em; letter-spacing: .32em; color: #fff; text-shadow: 0 0 .5em rgba(155,107,255,.8), 0 .08em 0 #2a0b4a; margin: .2em 0 .35em; }
+.lc-obj { font-size: 1.15em; letter-spacing: .12em; color: #ffe4a8; text-shadow: 0 0 .6em rgba(0,0,0,.9); }
+.levelcard::before, .levelcard::after { content: ''; display: block; height: 1px; width: 36em; margin: .8em auto; background: linear-gradient(90deg, transparent, rgba(95,243,255,.7), transparent); }
+
+/* ---------- Decisión ---------- */
+#choice { align-items: center; justify-content: center; background: radial-gradient(ellipse at center, rgba(10,4,20,.55), rgba(2,1,6,.92)); }
+.choice-wrap { text-align: center; }
+.choice-title { font-family: 'Orbitron'; font-weight: 900; font-size: 2em; letter-spacing: .25em; margin-bottom: 1.4em; color: #fff; text-shadow: 0 0 .8em rgba(255,207,107,.5); }
+.choice-cards { display: flex; gap: 2em; }
+.card {
+  width: 19em; padding: 1.6em 1.5em 1.8em; cursor: pointer; text-align: center; font-family: 'Rajdhani'; color: var(--ink);
+  background: linear-gradient(170deg, rgba(20,22,48,.92), rgba(6,6,16,.94)); border: 1px solid rgba(255,255,255,.14); border-radius: .5em;
+  transition: transform .2s, box-shadow .2s, border-color .2s; position: relative; outline: none;
+}
+.card:hover, .card.sel { transform: translateY(-.5em) scale(1.02); }
+.card-a:hover, .card-a.sel { border-color: var(--red); box-shadow: 0 0 2.5em rgba(255,66,88,.35); }
+.card-b:hover, .card-b.sel { border-color: var(--cy); box-shadow: 0 0 2.5em rgba(95,243,255,.35); }
+.card-key { position: absolute; top: .7em; left: .9em; font-family: 'Orbitron'; font-size: .8em; color: var(--dim); }
+.card-ico { width: 5.5em; height: 5.5em; margin: .4em auto 1em; border-radius: 50%; position: relative; }
+.ico-a { background: radial-gradient(circle, #ff6a7a 0%, #8a0f22 45%, transparent 70%); box-shadow: 0 0 2em rgba(255,66,88,.5); }
+.ico-a::after { content: ''; position: absolute; inset: 1.6em; border: .25em solid #ffd0d6; transform: rotate(45deg); }
+.ico-b { background: radial-gradient(circle, #d9ffff 0%, #2ab6d6 40%, transparent 70%); box-shadow: 0 0 2em rgba(95,243,255,.5); }
+.ico-b::after { content: ''; position: absolute; inset: 1.3em; border-radius: 50%; border: .2em dashed #e8ffff; animation: spin 8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.card-name { font-family: 'Orbitron'; font-weight: 700; font-size: 1.05em; letter-spacing: .12em; margin-bottom: .6em; text-transform: uppercase; }
+.card-desc { font-size: 1.05em; line-height: 1.35; color: #c4d0ea; }
+
+/* ---------- Final ---------- */
+#ending { align-items: flex-end; justify-content: center; background: linear-gradient(0deg, rgba(2,2,8,.92) 0%, rgba(2,2,8,.5) 38%, transparent 62%); }
+.ending { max-width: 44em; text-align: center; margin-bottom: 2.2em; }
+.ending-kicker { font-family: 'Orbitron'; letter-spacing: .6em; font-size: .85em; color: var(--gold); }
+.ending-title { font-family: 'Orbitron'; font-weight: 900; font-size: 2.3em; letter-spacing: .2em; margin: .25em 0 .5em; text-shadow: 0 0 .7em rgba(255,255,255,.35); }
+.ending-text { font-size: 1.2em; line-height: 1.5; color: #dbe4f7; }
+.ending .row { justify-content: center; }
+
+/* ---------- Fundido ---------- */
+.fade { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; transition: opacity .55s ease; }
+.fade.on { opacity: 1; }

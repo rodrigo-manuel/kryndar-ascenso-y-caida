@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KRYNDAR: Ascenso y Caída</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 26 14 20 30 10 29 6 14Z' fill='%23ffcf6b' stroke='%239b6bff' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="wrap">
+    <canvas id="game"></canvas>
+
+    <div id="ui">
+      <!-- MENÚ PRINCIPAL -->
+      <section id="menu" class="screen">
+        <div class="menu-col">
+          <div class="logo">
+            <div class="logo-kicker">UNA HISTORIA DEL DOMINIO</div>
+            <h1 class="logo-title">KRYNDAR</h1>
+            <div class="logo-sub">ASCENSO <span>Y</span> CAÍDA</div>
+          </div>
+          <nav class="menu-list" data-nav>
+            <button class="btn" data-act="new">Nueva partida</button>
+            <button class="btn" data-act="continue" id="btn-continue">Continuar</button>
+            <button class="btn" data-act="levels">Seleccionar nivel</button>
+            <button class="btn" data-act="controls">Controles</button>
+            <button class="btn" data-act="credits">Créditos</button>
+          </nav>
+          <div class="menu-foot">Acción · Aventura · Sigilo — 2D lateral · +13</div>
+        </div>
+      </section>
+
+      <!-- SELECCIÓN DE NIVEL -->
+      <section id="levels" class="screen panel-screen">
+        <div class="panel wide">
+          <h2>Seleccionar nivel</h2>
+          <div class="level-grid" id="level-grid" data-nav></div>
+          <div class="row">
+            <button class="btn small ghost" data-act="unlock">Desbloquear todo (presentación)</button>
+            <button class="btn small" data-act="back">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTROLES -->
+      <section id="controls" class="screen panel-screen">
+        <div class="panel">
+          <h2>Controles</h2>
+          <table class="keys">
+            <tr><td><kbd>A</kbd><kbd>D</kbd> / <kbd>←</kbd><kbd>→</kbd></td><td>Moverse</td><td class="un">Nivel 1</td></tr>
+            <tr><td><kbd>ESPACIO</kbd></td><td>Saltar · mantener en el aire para <b>volar</b> (gasta energía)</td><td class="un">Nivel 1</td></tr>
+            <tr><td><kbd>CLIC IZQ.</kbd> / <kbd>J</kbd></td><td>Golpe básico</td><td class="un">Nivel 1</td></tr>
+            <tr><td>Mantener <kbd>CLIC</kbd> / <kbd>J</kbd></td><td>Golpe cargado (rompe guardias y muros)</td><td class="un">Nivel 2</td></tr>
+            <tr><td><kbd>SHIFT</kbd> / <kbd>K</kbd></td><td>Dash / esquive (invulnerable)</td><td class="un">Nivel 3</td></tr>
+            <tr><td><kbd>E</kbd></td><td>Interactuar: palancas, diálogos</td><td class="un">Nivel 3</td></tr>
+            <tr><td><kbd>Q</kbd></td><td>Grito de Resistencia</td><td class="un">Jefe final</td></tr>
+            <tr><td><kbd>S</kbd> / <kbd>↓</kbd></td><td>Bajar de plataformas finas</td><td class="un">Siempre</td></tr>
+            <tr><td><kbd>ESC</kbd> / <kbd>P</kbd></td><td>Pausa</td><td class="un">Siempre</td></tr>
+            <tr><td><kbd>M</kbd></td><td>Silenciar sonido</td><td class="un">Siempre</td></tr>
+          </table>
+          <div class="row"><button class="btn small" data-act="back">Volver</button></div>
+        </div>
+      </section>
+
+      <!-- CRÉDITOS -->
+      <section id="credits" class="screen panel-screen">
+        <div class="panel">
+          <h2>Créditos</h2>
+          <p class="credits">
+            <b>KRYNDAR: Ascenso y Caída</b><br>
+            Concepto y diseño: <b>Rodrigo Alfaro</b><br>
+            Programación Orientada a Entornos Multimediales<br><br>
+            Desarrollado en HTML5 Canvas, CSS y JavaScript (Visual Studio Code).<br>
+            Gráficos, animación, partículas, música y efectos generados por código.
+          </p>
+          <div class="row"><button class="btn small" data-act="back">Volver</button></div>
+        </div>
+      </section>
+
+      <!-- HISTORIA -->
+      <section id="story" class="screen">
+        <div class="story">
+          <p class="s1">Tras años de ausencia, <b>Kriss</b> —guerrero de Kryndar, de fuerza sobrehumana y capaz de volar— regresa a su mundo.</p>
+          <p class="s2">Las ruinas guardan un secreto: el <b>Dominio de Kryndar</b>, el imperio que juró proteger, oculta una verdad peligrosa sobre el <b>Núcleo de Solthar</b>.</p>
+          <p class="s3">Reúne los <b>5 fragmentos</b> del Núcleo. Evita las patrullas. Enfrenta a tu antiguo mentor, el <b>General Vexor</b>.</p>
+          <p class="s4">Y decide el destino de todo un mundo.</p>
+          <button class="btn" data-act="begin">Comenzar ▸</button>
+        </div>
+      </section>
+
+      <!-- PAUSA -->
+      <section id="pause" class="screen panel-screen">
+        <div class="panel narrow">
+          <h2>Pausa</h2>
+          <nav class="menu-list" data-nav>
+            <button class="btn" data-act="resume">Reanudar</button>
+            <button class="btn" data-act="restart">Reiniciar nivel</button>
+            <button class="btn" data-act="mute" id="btn-mute">Sonido: Sí</button>
+            <button class="btn" data-act="controls">Controles</button>
+            <button class="btn" data-act="quit">Salir al menú</button>
+          </nav>
+        </div>
+      </section>
+
+      <!-- DECISIÓN FINAL -->
+      <section id="choice" class="screen">
+        <div class="choice-wrap">
+          <h2 class="choice-title">¿Qué eliges, Kriss?</h2>
+          <div class="choice-cards" data-nav>
+            <button class="card card-a" data-act="endA">
+              <div class="card-key">A</div>
+              <div class="card-ico ico-a"></div>
+              <div class="card-name">Restaurar el Dominio</div>
+              <div class="card-desc">Estabilizar el Núcleo bajo el control del imperio. El orden se mantiene… a un precio.</div>
+            </button>
+            <button class="card card-b" data-act="endB">
+              <div class="card-key">B</div>
+              <div class="card-ico ico-b"></div>
+              <div class="card-name">Liberar Kryndar</div>
+              <div class="card-desc">Destruir el sistema de control del Dominio. Un futuro libre, incierto pero esperanzador.</div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL -->
+      <section id="ending" class="screen">
+        <div class="ending">
+          <div class="ending-kicker" id="end-kicker">FINAL A</div>
+          <h2 class="ending-title" id="end-title">Restaurar el Dominio</h2>
+          <p class="ending-text" id="end-text"></p>
+          <div class="row" data-nav>
+            <button class="btn small" data-act="otherEnd">Ver el otro final</button>
+            <button class="btn small" data-act="quit">Volver al menú</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- DIÁLOGO -->
+      <div id="dialog" class="dialog">
+        <div class="portrait-frame"><canvas id="portrait" width="160" height="160"></canvas></div>
+        <div class="dialog-body">
+          <div class="dialog-name" id="dialog-name"></div>
+          <div class="dialog-text" id="dialog-text"></div>
+          <div class="dialog-hint">E · ESPACIO · CLIC ▸</div>
+        </div>
+      </div>
+
+      <!-- TARJETA DE NIVEL -->
+      <div id="levelcard" class="levelcard">
+        <div class="lc-num" id="lc-num">NIVEL 1</div>
+        <div class="lc-name" id="lc-name">RUINAS EXTERIORES</div>
+        <div class="lc-obj" id="lc-obj"></div>
+      </div>
+
+      <div id="fade" class="fade"></div>
+    </div>
+  </div>
+
+  <!-- Núcleo -->
+  <script src="src/core/engine.js"></script>
+  <script src="src/core/audio.js"></script>
+  <script src="src/core/fx.js"></script>
+  <script src="src/core/tilemap.js"></script>
+  <!-- Render -->
+  <script src="src/render/rig.js"></script>
+  <script src="src/render/themes.js"></script>
+  <!-- Entidades -->
+  <script src="src/entities/player.js"></script>
+  <script src="src/entities/soldier.js"></script>
+  <script src="src/entities/korr.js"></script>
+  <script src="src/entities/vexor.js"></script>
+  <script src="src/entities/props.js"></script>
+  <!-- Niveles y diálogos -->
+  <script src="src/levels/dialogs.js"></script>
+  <script src="src/levels/levels.js"></script>
+  <!-- Interfaz -->
+  <script src="src/ui/hud.js"></script>
+  <script src="src/ui/screens.js"></script>
+  <!-- Juego -->
+  <script src="src/main.js"></script>
+</body>
+</html>
