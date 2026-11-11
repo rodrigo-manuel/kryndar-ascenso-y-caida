@@ -3,9 +3,13 @@
 Juego 2D de acción, sigilo y plataformas (side‑scroller) hecho con **HTML5 Canvas, CSS y JavaScript puro** en Visual Studio Code.
 Concepto y diseño: **Rodrigo Alfaro** — Programación Orientada a Entornos Multimediales.
 
+### ▶ [Jugar ahora en el navegador](https://rodrigo-manuel.github.io/kryndar-ascenso-y-caida/)
+
 Todo el arte, la animación, las partículas, la iluminación, la música y los efectos de sonido se **generan por código**: no hay archivos de imagen ni de audio.
 
 ## Cómo ejecutarlo
+
+Opción 0 — en línea: https://rodrigo-manuel.github.io/kryndar-ascenso-y-caida/
 
 Opción 1 — doble clic en `index.html` (funciona en Chrome/Edge/Firefox).
 
